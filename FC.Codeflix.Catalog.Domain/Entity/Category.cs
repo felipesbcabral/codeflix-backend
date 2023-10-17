@@ -1,12 +1,10 @@
 ﻿using FC.Codeflix.Catalog.Domain.Exceptions;
-using System.ComponentModel.DataAnnotations;
-using System.Net.Http.Headers;
+using FC.Codeflix.Catalog.Domain.SeedWork;
+using System.Runtime.InteropServices;
 
 namespace FC.Codeflix.Catalog.Domain.Entity;
-public class Category
+public class Category : AggregateRoot
 {
-    public Guid Id { get; private set; }
-
     public string Name { get; private set; }
 
     public string Description { get; private set; }
@@ -15,9 +13,8 @@ public class Category
 
     public DateTime CreatedAt { get; private set; }
 
-    public Category(string name, string description, bool isActive = true)
+    public Category(string name, string description, bool isActive = true) : base()
     {
-        Id = Guid.NewGuid();
         Name = name;
         Description = description;
         IsActive = isActive;
@@ -34,6 +31,13 @@ public class Category
     public void Deactivate()
     {
         IsActive = false;
+        Validate();
+    }
+
+    public void Update(string name, [Optional]string description)
+    {
+        Name = name;
+        Description = description ?? Description;
         Validate();
     }
 
