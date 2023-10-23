@@ -24,6 +24,8 @@ public class CategoryTest
         //Act
         var category = new DomainEntity.Category(validCategory.Name, validCategory.Description);
 
+        Thread.Sleep(1);
+
         var dateTimeAfter = DateTime.Now;
         //Assert
         category.Should().NotBeNull();
@@ -87,7 +89,6 @@ public class CategoryTest
     {
         var validCategory = _categoryTestFixture.GetValidCategory();
 
-
         Action action =
             () => new DomainEntity.Category(validCategory.Name, null!);
 
@@ -98,10 +99,7 @@ public class CategoryTest
 
     [Theory(DisplayName = nameof(Instantiate_Error_When_Name_Has_Less_Of_Three_Characters))]
     [Trait("Domain", "Category - Aggregates")]
-    [InlineData("1")]
-    [InlineData("12")]
-    [InlineData("a")]
-    [InlineData("ca")]
+    [MemberData(nameof(GetNamesWithLessThan3Characters), parameters: 10)]
     public void Instantiate_Error_When_Name_Has_Less_Of_Three_Characters(string invalidName)
     {
         var validCategory = _categoryTestFixture.GetValidCategory();
@@ -112,6 +110,19 @@ public class CategoryTest
         action.Should()
             .Throw<EntityValidationException>()
             .WithMessage("Name should be at least 3 characters long");
+    }
+
+    public static IEnumerable<object[]> GetNamesWithLessThan3Characters(int numberOfTests = 6)
+    {
+        var fixture = new CategoryTestFixture();
+
+        for (int i = 0; i < numberOfTests; i++)
+        {
+            var isOdd = i % 2 == 1;
+            yield return new object[] {
+                fixture.GetValidCategoryName()[..(isOdd ? 1 : 2)]
+            };
+        }
     }
 
     [Fact(DisplayName = nameof(Instantiate_Error_When_Name_Has_More_Than_255_Characters))]
@@ -179,12 +190,12 @@ public class CategoryTest
     public void Update()
     {
         var category = _categoryTestFixture.GetValidCategory();
-        var newValues = new { Name = "New name", Description = "New Description" };
+        var categoryWithnewValues = _categoryTestFixture.GetValidCategory();
 
-        category.Update(newValues.Name, newValues.Description);
+        category.Update(categoryWithnewValues.Name, categoryWithnewValues.Description);
 
-        category.Name.Should().Be(newValues.Name);
-        category.Description.Should().Be(newValues.Description);
+        category.Name.Should().Be(categoryWithnewValues.Name);
+        category.Description.Should().Be(categoryWithnewValues.Description);
     }
 
     [Fact(DisplayName = nameof(Update_Only_Name))]
@@ -192,12 +203,12 @@ public class CategoryTest
     public void Update_Only_Name()
     {
         var category = _categoryTestFixture.GetValidCategory();
-        var newValues = new { Name = "New name" };
+        var newName = _categoryTestFixture.GetValidCategoryName();
         var currentDescription = category.Description;
 
-        category.Update(newValues.Name);
+        category.Update(newName);
 
-        category.Name.Should().Be(newValues.Name);
+        category.Name.Should().Be(newName);
         category.Description.Should().Be(currentDescription);
     }
 
@@ -242,7 +253,7 @@ public class CategoryTest
     public void Update_Error_When_Name_Has_More_Than_255_Characters()
     {
         var category = _categoryTestFixture.GetValidCategory();
-        var invalidName = String.Join(null, Enumerable.Range(1, 256).Select(_ => "a").ToArray());
+        var invalidName = _categoryTestFixture.Faker.Lorem.Letter(256);
 
         Action action =
             () => category.Update(invalidName);
@@ -257,7 +268,9 @@ public class CategoryTest
     public void Update_Error_When_Description_Has_More_Than_10000_Characters()
     {
         var category = _categoryTestFixture.GetValidCategory();
-        var invalidDescription = String.Join(null, Enumerable.Range(1, 10001).Select(_ => "a").ToArray());
+        var invalidDescription = _categoryTestFixture.Faker.Commerce.ProductDescription();
+        while (invalidDescription.Length <= 10000)
+            invalidDescription = $"{invalidDescription} {_categoryTestFixture.Faker.Commerce.ProductDescription()}";
 
         Action action =
             () => category.Update("Category Name ok", invalidDescription);
