@@ -41,6 +41,36 @@ public class CreateCategoryTestFixture : BaseFixture
             GetRandomBoolean()
             );
 
+    public CreateCategoryInput GetInvalidInputShortName()
+    {
+        var invalidInputName = GetInput();
+        invalidInputName.Name = invalidInputName.Name[..2];
+        return invalidInputName;
+    }
+
+    public CreateCategoryInput GetInvalidInputTooLongName()
+    {
+        var invalidInputTooLongName = GetInput();
+        var invalidName = Faker.Lorem.Letter(256);
+        invalidInputTooLongName.Name = invalidName;
+        return invalidInputTooLongName;
+    }
+
+    public CreateCategoryInput GetInvalidInputDescriptionNull()
+    {
+        var invalidInputDescriptionNull = GetInput();
+        invalidInputDescriptionNull.Description = null!;
+        return invalidInputDescriptionNull;
+    }
+
+    public CreateCategoryInput GetInvalidInputDescriptionTooLong()
+    {
+        var invalidInputDescriptionTooLong = GetInput();
+        var invalidDescription = Faker.Lorem.Letter(11000);
+        invalidInputDescriptionTooLong.Description = invalidDescription;
+        return invalidInputDescriptionTooLong;
+    }
+
     public Mock<ICategoryRepository> GetRepositoryMock()
         => new();
     public Mock<IUnitOfWork> GetUnitOfWorkMock()
