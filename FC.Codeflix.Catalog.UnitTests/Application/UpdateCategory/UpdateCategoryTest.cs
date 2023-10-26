@@ -1,4 +1,5 @@
 ﻿using FC.Codeflix.Catalog.Application.UseCases.Category.Common;
+using FC.Codeflix.Catalog.Domain.Entity;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -16,13 +17,19 @@ public class UpdateCategoryTest
         _fixture = fixture;
     }
 
-    [Fact(DisplayName = nameof(Update_Category))]
+    [Theory(DisplayName = nameof(Update_Category))]
     [Trait("Application", "UpdateCategory - Use Cases")]
-    public async Task Update_Category()
+    [MemberData(
+        nameof(UpdateCategoryTestDataGenerator.GetCategoriesToUpdate),
+        parameters: 10,
+        MemberType = typeof(UpdateCategoryTestDataGenerator)
+    )]
+    public async Task Update_Category(
+        Category exampleCategory,
+        UseCase.UpdateCategoryInput updateCategory)
     {
         var repositoryMock = _fixture.GetRepositoryMock();
         var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
-        var exampleCategory = _fixture.GetExampleCategory();
 
         repositoryMock.Setup(x => x.Get(
             exampleCategory.Id,
