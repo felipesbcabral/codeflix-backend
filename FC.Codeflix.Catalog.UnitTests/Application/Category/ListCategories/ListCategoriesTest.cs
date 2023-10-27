@@ -1,12 +1,12 @@
 ﻿using FC.Codeflix.Catalog.Application.UseCases.Category.Common;
-using FC.Codeflix.Catalog.Domain.Entity;
 using FC.Codeflix.Catalog.Domain.SeedWork.SearchableRepository;
 using FluentAssertions;
 using Moq;
 using Xunit;
+using Entity = FC.Codeflix.Catalog.Domain.Entity;
 using UseCase = FC.Codeflix.Catalog.Application.UseCases.Category.ListCategories;
 
-namespace FC.Codeflix.Catalog.UnitTests.Application.ListCategories;
+namespace FC.Codeflix.Catalog.UnitTests.Application.Category.ListCategories;
 
 [Collection(nameof(ListCategoriesTestFixture))]
 public class ListCategoriesTest
@@ -25,7 +25,7 @@ public class ListCategoriesTest
         var repositoryMock = _fixture.GetRepositoryMock();
         var input = _fixture.GetExampleInput();
 
-        var outputRepositorySearch = new SearchOutput<Category>(
+        var outputRepositorySearch = new SearchOutput<Entity.Category>(
             currentPage: input.Page,
             perPage: input.PerPage,
             items: categoriesExampleList,
@@ -85,10 +85,10 @@ public class ListCategoriesTest
         var repositoryMock = _fixture.GetRepositoryMock();
         var input = _fixture.GetExampleInput();
 
-        var outputRepositorySearch = new SearchOutput<Category>(
+        var outputRepositorySearch = new SearchOutput<Entity.Category>(
             currentPage: input.Page,
             perPage: input.PerPage,
-            items: new List<Category>().AsReadOnly(),
+            items: new List<Entity.Category>().AsReadOnly(),
             total: 0
          );
 
@@ -138,7 +138,7 @@ public class ListCategoriesTest
         //arrange
         var categoriesExampleList = _fixture.GetExampleCategoryList();
         var repositoryMock = _fixture.GetRepositoryMock();
-        var outputRepositorySearch = new SearchOutput<Category>(
+        var outputRepositorySearch = new SearchOutput<Entity.Category>(
             currentPage: input.Page,
             perPage: input.PerPage,
             items: categoriesExampleList,
