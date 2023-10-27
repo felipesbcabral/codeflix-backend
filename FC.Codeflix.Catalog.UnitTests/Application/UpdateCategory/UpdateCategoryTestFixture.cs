@@ -54,4 +54,28 @@ public class UpdateCategoryTestFixture : BaseFixture
                 GetValidCategoryDescription(),
                 GetRandomBoolean()
             );
+
+    public UpdateCategoryInput GetInvalidInputShortName()
+    {
+        var invalidInputName = GetValidInput();
+        invalidInputName.Name = invalidInputName.Name[..2];
+        return invalidInputName;
+    }
+
+    public UpdateCategoryInput GetInvalidInputTooLongName()
+    {
+        var invalidInputTooLongName = GetValidInput();
+        var invalidName = Faker.Lorem.Letter(256);
+        invalidInputTooLongName.Name = invalidName;
+        return invalidInputTooLongName;
+    }
+
+    public UpdateCategoryInput GetInvalidInputDescriptionTooLong()
+    {
+        var invalidInputDescriptionTooLong = GetValidInput();
+        var invalidDescription = Faker.Lorem.Letter(11000);
+        invalidInputDescriptionTooLong.Description = invalidDescription;
+        return invalidInputDescriptionTooLong;
+    }
+
 }
