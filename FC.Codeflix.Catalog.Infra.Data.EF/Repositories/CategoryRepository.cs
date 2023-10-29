@@ -30,6 +30,9 @@ public class CategoryRepository : ICategoryRepository
         return category!;
     }
 
+    public Task Update(Category aggregate, CancellationToken cancellationToken)
+        => Task.FromResult(_categories.Update(aggregate));
+
     public Task Delete(Category aggregate, CancellationToken cancellationToken)
         => throw new NotImplementedException();
 
@@ -37,6 +40,5 @@ public class CategoryRepository : ICategoryRepository
     public Task<SearchOutput<Category>> Search(SearchInput input, CancellationToken cancellationToken)
         => throw new NotImplementedException();
 
-    public Task<Category> Update(Category aggregate, CancellationToken cancellationToken)
-        => throw new NotImplementedException();
+
 }
