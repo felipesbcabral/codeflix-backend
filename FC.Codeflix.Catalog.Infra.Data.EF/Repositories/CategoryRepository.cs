@@ -18,7 +18,7 @@ public class CategoryRepository : ICategoryRepository
 
     public async Task Insert(Category aggregate, CancellationToken cancellationToken)
         => await _categories.AddAsync(aggregate, cancellationToken);
-
+    //test
     public async Task<Category> Get(Guid id, CancellationToken cancellationToken)
     {
         var category = await _categories.FindAsync(
