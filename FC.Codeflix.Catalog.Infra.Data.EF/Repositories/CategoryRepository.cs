@@ -18,7 +18,7 @@ public class CategoryRepository : ICategoryRepository
 
     public async Task Insert(Category aggregate, CancellationToken cancellationToken)
         => await _categories.AddAsync(aggregate, cancellationToken);
-    //test
+
     public async Task<Category> Get(Guid id, CancellationToken cancellationToken)
     {
         var category = await _categories.FindAsync(
@@ -30,9 +30,6 @@ public class CategoryRepository : ICategoryRepository
         return category!;
     }
 
-    public Task Update(Category aggregate, CancellationToken cancellationToken)
-        => Task.FromResult(_categories.Update(aggregate));
-
     public Task Delete(Category aggregate, CancellationToken cancellationToken)
         => throw new NotImplementedException();
 
@@ -40,5 +37,6 @@ public class CategoryRepository : ICategoryRepository
     public Task<SearchOutput<Category>> Search(SearchInput input, CancellationToken cancellationToken)
         => throw new NotImplementedException();
 
-
+    public Task<Category> Update(Category aggregate, CancellationToken cancellationToken)
+        => throw new NotImplementedException();
 }
