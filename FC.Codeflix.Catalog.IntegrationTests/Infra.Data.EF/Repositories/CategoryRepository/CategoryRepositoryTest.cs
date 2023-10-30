@@ -80,7 +80,7 @@ public class CategoryRepositoryTest
 
         await task.Should()
             .ThrowAsync<NotFoundException>()
-            .WithMessage($"Category '{exampleId}' nof found");
+            .WithMessage($"Category '{exampleId}' not found");
     }
 
     [Fact(DisplayName = nameof(Update))]

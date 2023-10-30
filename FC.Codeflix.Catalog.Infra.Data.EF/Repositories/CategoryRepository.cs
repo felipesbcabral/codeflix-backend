@@ -26,7 +26,7 @@ public class CategoryRepository : ICategoryRepository
             cancellationToken
             );
 
-        NotFoundException.ThrowIfNull(category, $"Category '{id}' nof found");
+        NotFoundException.ThrowIfNull(category, $"Category '{id}' not found");
         return category!;
     }
 
