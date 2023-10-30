@@ -4,7 +4,7 @@ using FluentAssertions;
 using Xunit;
 using UseCase = FC.Codeflix.Catalog.Application.UseCases.Category.GetCategory;
 
-namespace FC.Codeflix.Catalog.IntegrationTests.Application.UseCases.Category;
+namespace FC.Codeflix.Catalog.IntegrationTests.Application.UseCases.Category.GetCategory;
 
 [Collection(nameof(GetCategoryTestFixture))]
 public class GetCategoryTest
