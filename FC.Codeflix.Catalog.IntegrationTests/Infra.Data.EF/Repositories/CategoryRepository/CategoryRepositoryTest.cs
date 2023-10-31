@@ -246,7 +246,7 @@ public class CategoryRepositoryTest
         )
     {
         CodeflixCatalogDbContext dbContext = _fixture.CreateDbContext();
-        var exampleCategoriesList = _fixture.GetExampleCategoriesListWitNames(new List<string>()
+        var exampleCategoriesList = _fixture.GetExampleCategoriesListWithNames(new List<string>()
         {
             "Action",
             "Horror",
