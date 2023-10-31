@@ -56,6 +56,6 @@ public class GetCategoryTest
         var task = async ()
             => await useCase.Handle(input, CancellationToken.None);
 
-        await task.Should().ThrowAsync<NotFoundException>().WithMessage($"Category '{input.Id}' not found");
+        await task.Should().ThrowAsync<NotFoundException>().WithMessage($"Category '{input.Id}' not found.");
     }
 }

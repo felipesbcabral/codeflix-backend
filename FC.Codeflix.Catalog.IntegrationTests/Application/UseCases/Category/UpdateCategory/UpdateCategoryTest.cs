@@ -141,9 +141,7 @@ public class UpdateCategoryTest
 
     [Fact(DisplayName = nameof(Update_Throws_When_Cant_Instantiate_Category))]
     [Trait("Integration/Application", "UpdateCategory - Use Cases")]
-    public async Task Update_Throws_When_Not_Found_Category(
-        DomainEntity.Category exampleCategory,
-        UpdateCategoryInput exampleInput)
+    public async Task Update_Throws_When_Not_Found_Category()
     {
 
         var input = _fixture.GetValidInput();
@@ -157,7 +155,7 @@ public class UpdateCategoryTest
         var task = async () => await useCase.Handle(input, CancellationToken.None);
 
         await task.Should().ThrowAsync<NotFoundException>()
-            .WithMessage($"Category '{input.Id}' not found");
+            .WithMessage($"Category '{input.Id}' not found.");
     }
 
     [Theory(DisplayName = nameof(Update_Throws_When_Cant_Instantiate_Category))]
