@@ -9,9 +9,10 @@ public class CreateCategoryApiTestFixtureCollection
     : ICollectionFixture<CreateCategoryApiTestFixture>
 { }
 
-public class CreateCategoryApiTestFixture : CategoryBaseFixture
+public class CreateCategoryApiTestFixture
+    : CategoryBaseFixture
 {
-    public CreateCategoryInput getExampleInput()
+    public CreateCategoryInput GetExampleInput()
         => new(
             GetValidCategoryName(),
             GetValidCategoryDescription(),
