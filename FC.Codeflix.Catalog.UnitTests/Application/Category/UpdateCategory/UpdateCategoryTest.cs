@@ -29,7 +29,7 @@ public class UpdateCategoryTest
     )]
     public async Task Update_Category(
         Entity.Category exampleCategory,
-        UpdateCategoryInput updateCategory)
+        UpdateCategoryInput input)
     {
         var repositoryMock = _fixture.GetRepositoryMock();
         var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
@@ -38,11 +38,6 @@ public class UpdateCategoryTest
             exampleCategory.Id,
             It.IsAny<CancellationToken>())
         ).ReturnsAsync(exampleCategory);
-        var input = new UpdateCategoryInput(
-            exampleCategory.Id,
-            _fixture.GetValidCategoryName(),
-            _fixture.GetValidCategoryDescription(),
-            !exampleCategory.IsActive);
 
         unitOfWorkMock.Setup(x => x.Commit(
             It.IsAny<CancellationToken>())
