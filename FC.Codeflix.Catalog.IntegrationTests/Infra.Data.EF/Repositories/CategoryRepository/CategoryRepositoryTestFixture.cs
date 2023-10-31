@@ -46,7 +46,7 @@ public class CategoryRepositoryTestFixture : BaseFixture
     => Enumerable.Range(1, length)
         .Select(_ => GetExampleCategory()).ToList();
 
-    public List<Category> GetExampleCategoriesListWitNames(List<string> names)
+    public List<Category> GetExampleCategoriesListWithNames(List<string> names)
     => names.Select(name =>
     {
         var category = GetExampleCategory();
