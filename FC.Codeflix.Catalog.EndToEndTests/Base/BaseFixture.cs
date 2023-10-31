@@ -5,10 +5,15 @@ using Microsoft.EntityFrameworkCore;
 namespace FC.Codeflix.Catalog.EndToEndTests.Base;
 public class BaseFixture
 {
-    public BaseFixture()
-    => Faker = new Faker("pt_BR");
-
     protected Faker Faker { get; set; }
+
+    public ApiClient ApiClient { get; set; }
+
+    public BaseFixture(ApiClient apiClient)
+    {
+        Faker = new Faker("pt_BR");
+        ApiClient = apiClient;
+    }
 
     public CodeflixCatalogDbContext CreateDbContext(bool preserveData = false)
     {
