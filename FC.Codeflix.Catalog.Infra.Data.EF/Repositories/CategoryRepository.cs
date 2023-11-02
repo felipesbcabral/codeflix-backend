@@ -60,7 +60,8 @@ public class CategoryRepository : ICategoryRepository
         string orderProperty,
         SearchOrder order
     )
-        => (orderProperty.ToLower(), order) switch
+    {
+        var orderedQuery = (orderProperty.ToLower(), order) switch
         {
             ("name", SearchOrder.Asc) => query.OrderBy(x => x.Name),
             ("name", SearchOrder.Desc) => query.OrderByDescending(x => x.Name),
@@ -70,4 +71,7 @@ public class CategoryRepository : ICategoryRepository
             ("createdat", SearchOrder.Desc) => query.OrderByDescending(x => x.CreatedAt),
             _ => query.OrderBy(x => x.Name)
         };
+        return orderedQuery.ThenBy(x => x.CreatedAt);
+    }
+
 }
