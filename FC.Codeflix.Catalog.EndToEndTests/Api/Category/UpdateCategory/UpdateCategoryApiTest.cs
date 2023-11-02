@@ -22,7 +22,7 @@ public class UpdateCategoryApiTest : IDisposable
     [Trait("EndToEnd/API", "Category/Update - Endpoints")]
     public async void Update_Category()
     {
-        var exampleCategoriesList = _fixture.GetExampleCategoryList();
+        var exampleCategoriesList = _fixture.GetExampleCategoriesList();
         await _fixture.Persistence.InsertList(exampleCategoriesList);
         var exampleCategory = exampleCategoriesList[10];
         var input = _fixture.GetExampleInput(exampleCategory.Id);
@@ -51,7 +51,7 @@ public class UpdateCategoryApiTest : IDisposable
     [Trait("EndToEnd/API", "Category/Update - Endpoints")]
     public async void Update_Category_Only_Name()
     {
-        var exampleCategoriesList = _fixture.GetExampleCategoryList();
+        var exampleCategoriesList = _fixture.GetExampleCategoriesList();
         await _fixture.Persistence.InsertList(exampleCategoriesList);
         var exampleCategory = exampleCategoriesList[10];
         var input = new UpdateCategoryInput(
@@ -83,7 +83,7 @@ public class UpdateCategoryApiTest : IDisposable
     [Trait("EndToEnd/API", "Category/Update - Endpoints")]
     public async void Update_Category_Only_Name_And_Description()
     {
-        var exampleCategoriesList = _fixture.GetExampleCategoryList();
+        var exampleCategoriesList = _fixture.GetExampleCategoriesList();
         await _fixture.Persistence.InsertList(exampleCategoriesList);
         var exampleCategory = exampleCategoriesList[10];
         var input = new UpdateCategoryInput(
@@ -116,7 +116,7 @@ public class UpdateCategoryApiTest : IDisposable
     [Trait("EndToEnd/API", "Category/Update - Endpoints")]
     public async void Error_When_Not_Found()
     {
-        var exampleCategoriesList = _fixture.GetExampleCategoryList();
+        var exampleCategoriesList = _fixture.GetExampleCategoriesList();
         await _fixture.Persistence.InsertList(exampleCategoriesList);
         var randomGuid = Guid.NewGuid();
         var input = _fixture.GetExampleInput(randomGuid);
@@ -145,7 +145,7 @@ public class UpdateCategoryApiTest : IDisposable
     UpdateCategoryInput input,
     string expectedDetail)
     {
-        var exampleCategoriesList = _fixture.GetExampleCategoryList();
+        var exampleCategoriesList = _fixture.GetExampleCategoriesList();
         await _fixture.Persistence.InsertList(exampleCategoriesList);
         var exampleCategory = exampleCategoriesList[10];
         input.Id = exampleCategory.Id;

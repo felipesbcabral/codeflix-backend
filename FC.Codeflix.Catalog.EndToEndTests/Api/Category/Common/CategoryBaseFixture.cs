@@ -64,7 +64,7 @@ public class CategoryBaseFixture : BaseFixture
              GetRandomBoolean()
          );
 
-    public List<DomainEntity.Category> GetExampleCategoryList(int listLength = 15)
+    public List<DomainEntity.Category> GetExampleCategoriesList(int listLength = 15)
         => Enumerable.Range(1, listLength).Select(
             _ => new DomainEntity.Category(
                 GetValidCategoryName(),

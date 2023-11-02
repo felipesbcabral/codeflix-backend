@@ -18,7 +18,7 @@ public class DeleteCategoryApiTest : IDisposable
     [Trait("EndToEnd/API", "Category/Delete - Endpoints")]
     public async Task Delete_Category()
     {
-        var exampleCategoriesList = _fixture.GetExampleCategoryList();
+        var exampleCategoriesList = _fixture.GetExampleCategoriesList();
         await _fixture.Persistence.InsertList(exampleCategoriesList);
         var exampleCategory = exampleCategoriesList[10];
 
@@ -37,7 +37,7 @@ public class DeleteCategoryApiTest : IDisposable
     [Trait("EndToEnd/API", "Category/Get - Endpoints")]
     public async Task Error_When_Not_Found()
     {
-        var exampleCategoriesList = _fixture.GetExampleCategoryList();
+        var exampleCategoriesList = _fixture.GetExampleCategoriesList();
         await _fixture.Persistence.InsertList(exampleCategoriesList);
         var randomGuid = Guid.NewGuid();
 
