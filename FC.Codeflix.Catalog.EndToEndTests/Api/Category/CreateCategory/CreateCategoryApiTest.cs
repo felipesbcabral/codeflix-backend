@@ -10,7 +10,7 @@ using Xunit;
 namespace FC.Codeflix.Catalog.EndToEndTests.Api.Category.CreateCategory;
 
 [Collection(nameof(CreateCategoryApiTestFixture))]
-public class CreateCategoryApiTest
+public class CreateCategoryApiTest : IDisposable
 {
     private readonly CreateCategoryApiTestFixture _fixture;
 
@@ -32,7 +32,6 @@ public class CreateCategoryApiTest
         response.Should().NotBeNull();
         response!.StatusCode.Should().Be(HttpStatusCode.Created);
         output.Should().NotBeNull();
-        output!.Should().NotBeNull();
         output!.Name.Should().Be(input.Name);
         output.Description.Should().Be(input.Description);
         output.IsActive.Should().Be(input.IsActive);
@@ -50,13 +49,13 @@ public class CreateCategoryApiTest
             .NotBeSameDateAs(default);
     }
 
-    [Theory(DisplayName = nameof(Throw_When_Cant_Instantiate_Aggregate))]
-    [Trait("EndToEnd/API", "Category - Endpoints")]
+    [Theory(DisplayName = nameof(Error_When_Cant_Instantiate_Aggregate))]
+    [Trait("EndToEnd/API", "Category/Create - Endpoints")]
     [MemberData(
         nameof(CreateCategoryApiTestDataGenerator.GetInvalidInputs),
         MemberType = typeof(CreateCategoryApiTestDataGenerator)
     )]
-    public async Task Throw_When_Cant_Instantiate_Aggregate(
+    public async Task Error_When_Cant_Instantiate_Aggregate(
         CreateCategoryInput input,
         string expectedDetail
     )
@@ -75,4 +74,8 @@ public class CreateCategoryApiTest
         output!.Status.Should().Be(StatusCodes.Status422UnprocessableEntity);
         output!.Detail.Should().Be(expectedDetail);
     }
+
+
+    public void Dispose()
+        => _fixture.CleanPersistence();
 }
