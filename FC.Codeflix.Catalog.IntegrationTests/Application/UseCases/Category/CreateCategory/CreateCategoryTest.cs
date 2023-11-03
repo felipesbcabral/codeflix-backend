@@ -52,9 +52,9 @@ public class CreateCategoryTest
         output.CreatedAt.Should().NotBeSameDateAs(default);
     }
 
-    [Fact(DisplayName = nameof(Create_Category_Only_With_Name))]
+    [Fact(DisplayName = nameof(Create_Category_With_Only_Name))]
     [Trait("Integration/Application", "CreateCategory - Use Cases")]
-    public async void Create_Category_Only_With_Name()
+    public async void Create_Category_With_Only_Name()
     {
         var dbContext = _fixture.CreateDbContext();
         var repository = new CategoryRepository(dbContext);

@@ -1,9 +1,10 @@
-﻿using System.Net;
-using FC.Codeflix.Catalog.Application.UseCases.Category.Common;
+﻿using FC.Codeflix.Catalog.Application.UseCases.Category.Common;
 using FC.Codeflix.Catalog.EndToEndTests.Api.Category.GetCategoryById;
+using FC.Codeflix.Catalog.EndToEndTests.Extensions.DateTime;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using Xunit;
 
 namespace FC.Codeflix.Catalog.EndToEndTests.Api.Category.GetCategory;
@@ -32,8 +33,9 @@ public class GetCategoryApiTest : IDisposable
         output!.Id.Should().Be(exampleCategory.Id);
         output.Name.Should().Be(exampleCategory.Name);
         output.Description.Should().Be(exampleCategory.Description);
-        output.CreatedAt.Should().Be(exampleCategory.CreatedAt);
         output.IsActive.Should().Be(exampleCategory.IsActive);
+        output.CreatedAt.TrimMillisseconds().Should()
+            .Be(exampleCategory.CreatedAt.TrimMillisseconds());
     }
 
     [Fact(DisplayName = nameof(Error_When_Not_Found))]

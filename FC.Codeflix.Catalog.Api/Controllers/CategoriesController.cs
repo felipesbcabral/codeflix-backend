@@ -74,6 +74,7 @@ public class CategoriesController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(typeof(CategoryModelOutput), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> List(
     CancellationToken cancellationToken,
     [FromQuery] int? page = null,
