@@ -8,4 +8,4 @@ services:
         ports:
           - 3306:3306
         environment:
-          MY_ROOT_PASSWORD: 'C0D3fl1X.@'
+          MYSQL_ROOT_PASSWORD: 'C0D3fl1X.@'
