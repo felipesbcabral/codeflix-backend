@@ -26,7 +26,8 @@
         "ASPNETCORE_URLS": "https://+:443;http://+:80"
       },
       "publishAllPorts": true,
-      "useSSL": true
+      "useSSL": true,
+      "DockerfileRunArguments": "--network service_catalog -p 4040:80 -p 5050:443"
     }
   },
   "$schema": "https://json.schemastore.org/launchsettings.json",
