@@ -1,4 +1,5 @@
 ﻿using FC.Codeflix.Catalog.Api.ApiModels.Category;
+using FC.Codeflix.Catalog.Api.ApiModels.Response;
 using FC.Codeflix.Catalog.Application.UseCases.Category.Common;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
@@ -25,7 +26,7 @@ public class UpdateCategoryApiTest : IDisposable
         var exampleCategory = exampleCategoriesList[10];
         var input = _fixture.GetExampleInput();
 
-        var (response, output) = await _fixture.ApiClient.Put<CategoryModelOutput>(
+        var (response, output) = await _fixture.ApiClient.Put<ApiResponse<CategoryModelOutput>>(
             $"/categories/{exampleCategory.Id}",
             input
         );
@@ -33,10 +34,11 @@ public class UpdateCategoryApiTest : IDisposable
         response.Should().NotBeNull();
         response!.StatusCode.Should().Be((HttpStatusCode)StatusCodes.Status200OK);
         output.Should().NotBeNull();
-        output!.Id.Should().Be(exampleCategory.Id);
-        output!.Name.Should().Be(input.Name);
-        output.Description.Should().Be(input.Description);
-        output.IsActive.Should().Be((bool)input.IsActive!);
+        output!.Data.Should().NotBeNull();
+        output!.Data.Id.Should().Be(exampleCategory.Id);
+        output.Data!.Name.Should().Be(input.Name);
+        output.Data.Description.Should().Be(input.Description);
+        output.Data.IsActive.Should().Be((bool)input.IsActive!);
         var dbCategory = await _fixture
             .Persistence.GetById(exampleCategory.Id);
         dbCategory.Should().NotBeNull();
@@ -56,7 +58,7 @@ public class UpdateCategoryApiTest : IDisposable
             _fixture.GetValidCategoryName()
         );
 
-        var (response, output) = await _fixture.ApiClient.Put<CategoryModelOutput>(
+        var (response, output) = await _fixture.ApiClient.Put<ApiResponse<CategoryModelOutput>>(
             $"/categories/{exampleCategory.Id}",
             input
         );
@@ -64,10 +66,11 @@ public class UpdateCategoryApiTest : IDisposable
         response.Should().NotBeNull();
         response!.StatusCode.Should().Be((HttpStatusCode)StatusCodes.Status200OK);
         output.Should().NotBeNull();
-        output!.Id.Should().Be(exampleCategory.Id);
-        output!.Name.Should().Be(input.Name);
-        output.Description.Should().Be(exampleCategory.Description);
-        output.IsActive.Should().Be((bool)exampleCategory.IsActive!);
+        output!.Data.Should().NotBeNull();
+        output!.Data.Id.Should().Be(exampleCategory.Id);
+        output!.Data.Name.Should().Be(input.Name);
+        output.Data.Description.Should().Be(exampleCategory.Description);
+        output.Data.IsActive.Should().Be((bool)exampleCategory.IsActive!);
         var dbCategory = await _fixture
             .Persistence.GetById(exampleCategory.Id);
         dbCategory.Should().NotBeNull();
@@ -88,7 +91,7 @@ public class UpdateCategoryApiTest : IDisposable
             _fixture.GetValidCategoryDescription()
         );
 
-        var (response, output) = await _fixture.ApiClient.Put<CategoryModelOutput>(
+        var (response, output) = await _fixture.ApiClient.Put<ApiResponse<CategoryModelOutput>>(
             $"/categories/{exampleCategory.Id}",
             input
         );
@@ -96,10 +99,11 @@ public class UpdateCategoryApiTest : IDisposable
         response.Should().NotBeNull();
         response!.StatusCode.Should().Be((HttpStatusCode)StatusCodes.Status200OK);
         output.Should().NotBeNull();
-        output!.Id.Should().Be(exampleCategory.Id);
-        output!.Name.Should().Be(input.Name);
-        output.Description.Should().Be(input.Description);
-        output.IsActive.Should().Be((bool)exampleCategory.IsActive!);
+        output!.Data.Should().NotBeNull();
+        output!.Data.Id.Should().Be(exampleCategory.Id);
+        output!.Data.Name.Should().Be(input.Name);
+        output.Data.Description.Should().Be(input.Description);
+        output.Data.IsActive.Should().Be((bool)exampleCategory.IsActive!);
         var dbCategory = await _fixture
             .Persistence.GetById(exampleCategory.Id);
         dbCategory.Should().NotBeNull();
