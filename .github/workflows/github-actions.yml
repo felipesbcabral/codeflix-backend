@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dotnet-version: [ '7.0.x' ]
+        dotnet-version: [ '6.0.x' ]
 
     steps:
       - uses: actions/checkout@v3
@@ -28,8 +28,12 @@ jobs:
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
 
+      - name: Use Bash as default shell
+        run: echo ::set-env name=SHELL::/bin/bash
+
       - name: Install Dependencies
-        run: dotnet restore FC.Codeflix.Catalog.sln
+        run: dotnet restore ./FC.Codeflix.Catalog.sln
+        shell: bash
 
       - name: Build
         run: dotnet build --configuration Release --no-restore FC.Codeflix.Catalog.sln
