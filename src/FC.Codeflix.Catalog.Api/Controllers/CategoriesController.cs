@@ -20,7 +20,7 @@ public class CategoriesController : ControllerBase
     public CategoriesController(IMediator mediator)
         => _mediator = mediator;
 
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id:guid}")]//test
     [ProducesResponseType(typeof(ApiResponse<CategoryModelOutput>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(
