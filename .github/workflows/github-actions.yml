@@ -29,7 +29,7 @@ jobs:
         dotnet-version: 6.0.x
         
     - name: Start containers
-      run: docker-compose -f "FC.Codeflix.Catalog.EndToEndTests/docker-compose.yml" up -d --build
+      run: docker-compose -f "tests/FC.Codeflix.Catalog.EndToEndTests/docker-compose.yml" up -d --build
 
     - name: Restore dependencies
       run: dotnet restore
