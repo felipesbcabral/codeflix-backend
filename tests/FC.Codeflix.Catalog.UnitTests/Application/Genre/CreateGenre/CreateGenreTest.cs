@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using FC.Codeflix.Catalog.Application.Exceptions;
+using FluentAssertions;
 using Moq;
 using Xunit;
 using DomainEntity = FC.Codeflix.Catalog.Domain.Entity;
@@ -18,10 +19,12 @@ public class CreateGenreTest
     public async Task Create()
     {
         var genreRepositoryMock = _fixture.GetGenreRepositoryMock();
+        var categoryRepositoryMock = _fixture.GetCategoryRepositoryMock();
         var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
         var useCase = new UseCase.CreateGenre(
             genreRepositoryMock.Object,
-            unitOfWorkMock.Object
+            unitOfWorkMock.Object,
+            categoryRepositoryMock.Object
         );
         var input = _fixture.GetExampleInput();
 
@@ -45,5 +48,85 @@ public class CreateGenreTest
         output.CreatedAt.Should().NotBeSameDateAs(default);
         output.CreatedAt.Should().BeAfter(datetimeBefore);
         output.CreatedAt.Should().BeBefore(datetimeAfter);
+    }
+
+    [Fact(DisplayName = nameof(Create_With_Related_Categories))]
+    [Trait("Application", "CreateGenre - Use Cases")]
+    public async Task Create_With_Related_Categories()
+    {
+        var input = _fixture.GetExampleInputWithCategories();
+        var genreRepositoryMock = _fixture.GetGenreRepositoryMock();
+        var categoryRepositoryMock = _fixture.GetCategoryRepositoryMock();
+        var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
+
+        categoryRepositoryMock.Setup(
+            x => x.GetIdsListByIds(
+                It.IsAny<List<Guid>>(),
+                It.IsAny<CancellationToken>()
+            )).ReturnsAsync(input.CategoriesIds!);
+
+        var useCase = new UseCase.CreateGenre(
+            genreRepositoryMock.Object,
+            unitOfWorkMock.Object,
+            categoryRepositoryMock.Object
+        );
+
+
+        var output = await useCase.Handle(input, CancellationToken.None);
+
+        genreRepositoryMock.Verify(x => x.Insert(
+            It.IsAny<DomainEntity.Genre>(),
+            It.IsAny<CancellationToken>()
+        ), Times.Once);
+
+        unitOfWorkMock.Verify(x => x.Commit(
+            It.IsAny<CancellationToken>()), Times.Once);
+
+        output.Should().NotBeNull();
+        output.Id.Should().NotBeEmpty();
+        output.Name.Should().Be(input.Name);
+        output.IsActive.Should().Be(input.IsActive);
+        output.Categories.Should().HaveCount(input.CategoriesIds?.Count ?? 0);
+        input.CategoriesIds?.ForEach(id =>
+            output.Categories.Should().Contain(id)
+        );
+        output.CreatedAt.Should().NotBeSameDateAs(default);
+    }
+
+    [Fact(DisplayName = nameof(Create_Throw_When_Category_Not_Found))]
+    [Trait("Application", "CreateGenre - Use Cases")]
+    public async Task Create_Throw_When_Category_Not_Found()
+    {
+        var input = _fixture.GetExampleInputWithCategories();
+        var exampleGuid = input.CategoriesIds![^1];
+        var genreRepositoryMock = _fixture.GetGenreRepositoryMock();
+        var categoryRepositoryMock = _fixture.GetCategoryRepositoryMock();
+        var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
+        categoryRepositoryMock.Setup(
+            x => x.GetIdsListByIds(
+                It.IsAny<List<Guid>>(),
+                It.IsAny<CancellationToken>()
+            )
+        ).ReturnsAsync(
+            (IReadOnlyList<Guid>)input.CategoriesIds
+                .FindAll(x => x != exampleGuid));
+
+        var useCase = new UseCase.CreateGenre(
+            genreRepositoryMock.Object,
+            unitOfWorkMock.Object,
+            categoryRepositoryMock.Object
+        );
+
+        var action = async () => await useCase.Handle(input, CancellationToken.None);
+
+        await action.Should().ThrowAsync<RelatedAggregateException>()
+                .WithMessage($"Related category id (or ids) not found: {exampleGuid}");
+        categoryRepositoryMock.Verify(x =>
+            x.GetIdsListByIds(
+                It.IsAny<List<Guid>>(),
+                It.IsAny<CancellationToken>()
+            ),
+            Times.Once
+        );
     }
 }
