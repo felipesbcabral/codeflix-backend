@@ -46,11 +46,11 @@ public class CategoryRepository : ICategoryRepository
         if (!String.IsNullOrWhiteSpace(input.Search))
             query = query.Where(x => x.Name.Contains(input.Search));
 
-        var total = await query.CountAsync();
+        var total = await query.CountAsync(cancellationToken);
         var items = await query
             .Skip(toSkip)
             .Take(input.PerPage)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return new SearchOutput<Category>(input.Page, input.PerPage, total, items);
     }
