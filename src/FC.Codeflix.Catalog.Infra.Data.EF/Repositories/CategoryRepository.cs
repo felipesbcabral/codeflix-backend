@@ -37,22 +37,26 @@ public class CategoryRepository : ICategoryRepository
         => Task.FromResult(_categories.Remove(aggregate));
 
     public async Task<SearchOutput<Category>> Search(
-        SearchInput input,
-        CancellationToken cancellationToken)
+    SearchInput input,
+    CancellationToken cancellationToken)
     {
         var toSkip = (input.Page - 1) * input.PerPage;
         var query = _categories.AsNoTracking();
         query = AddOrderToQuery(query, input.OrderBy, input.Order);
-        if (!String.IsNullOrWhiteSpace(input.Search))
-            query = query.Where(x => x.Name.Contains(input.Search));
 
-        var total = await query.CountAsync(cancellationToken);
-        var items = await query
+        var filteredQuery = query;
+
+        if (!String.IsNullOrWhiteSpace(input.Search))
+            filteredQuery = filteredQuery.Where(x => x.Name.Contains(input.Search));
+
+        var filteredTotal = await filteredQuery.CountAsync(cancellationToken);
+
+        var items = await filteredQuery
             .Skip(toSkip)
             .Take(input.PerPage)
             .ToListAsync(cancellationToken);
 
-        return new SearchOutput<Category>(input.Page, input.PerPage, total, items);
+        return new SearchOutput<Category>(input.Page, input.PerPage, filteredTotal, items);
     }
 
     private IQueryable<Category> AddOrderToQuery(
