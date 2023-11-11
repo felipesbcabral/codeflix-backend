@@ -1,5 +1,5 @@
 ﻿using FC.Codeflix.Catalog.Application.UseCases.Genre.Common;
-using FC.Codeflix.Catalog.UnitTests.Application.Genre.CreateGenre;
+using FC.Codeflix.Catalog.Application.UseCases.Genre.UpdateGenre;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -11,9 +11,9 @@ namespace FC.Codeflix.Catalog.UnitTests.Application.Genre.UpdateGenre;
 [Collection(nameof(UpdateGenreTestFixture))]
 public class UpdateGenreTest
 {
-    private readonly CreateGenreTestFixture _fixture;
+    private readonly UpdateGenreTestFixture _fixture;
 
-    public UpdateGenreTest(CreateGenreTestFixture fixture)
+    public UpdateGenreTest(UpdateGenreTestFixture fixture)
     {
         _fixture = fixture;
     }
@@ -39,6 +39,7 @@ public class UpdateGenreTest
         );
 
         var input = new UpdateGenreInput(
+            exampleGenre.Id,
             newNameExample,
             newIsActive);
 
