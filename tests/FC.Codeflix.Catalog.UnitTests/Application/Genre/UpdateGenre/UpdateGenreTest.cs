@@ -180,7 +180,7 @@ public class UpdateGenreTest
         var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
         var exampleGenre = _fixture.GetExampleGenre();
         var newNameExample = _fixture.GetValidGenreName();
-        var exampleCategoriesIdsList = _fixture.GetRanbomIdsList();
+        var exampleCategoriesIdsList = _fixture.GetRandomIdsList();
         var newIsActive = !exampleGenre.IsActive;
         genreRepositoryMock.Setup(x => x.Get(
             It.Is<Guid>(x => x == exampleGenre.Id),
@@ -230,10 +230,10 @@ public class UpdateGenreTest
         var categoryRepositoryMock = _fixture.GetCategoryRepositoryMock();
         var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
         var exampleGenre = _fixture.GetExampleGenre(
-            categoriesIds: _fixture.GetRanbomIdsList()
+            categoriesIds: _fixture.GetRandomIdsList()
         );
         var newNameExample = _fixture.GetValidGenreName();
-        var exampleCategoriesIdsList = _fixture.GetRanbomIdsList();
+        var exampleCategoriesIdsList = _fixture.GetRandomIdsList();
         var newIsActive = !exampleGenre.IsActive;
         genreRepositoryMock.Setup(x => x.Get(
             It.Is<Guid>(x => x == exampleGenre.Id),
@@ -284,37 +284,32 @@ public class UpdateGenreTest
         var categoryRepositoryMock = _fixture.GetCategoryRepositoryMock();
         var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
         var exampleGenre = _fixture.GetExampleGenre(
-            categoriesIds: _fixture.GetRanbomIdsList()
+            categoriesIds: _fixture.GetRandomIdsList()
         );
-        var exampleNewCategoriesIdsList = _fixture.GetRanbomIdsList();
-
+        var exampleNewCategoriesIdsList = _fixture.GetRandomIdsList(10);
         var listReturnedByCategoryRepository =
             exampleNewCategoriesIdsList
                 .GetRange(0, exampleNewCategoriesIdsList.Count - 2);
 
-        var idsNotReturnedByCategoryRepository =
+        var IdsNotReturnedByCategoryRepository =
             exampleNewCategoriesIdsList
                 .GetRange(exampleNewCategoriesIdsList.Count - 2, 2);
-
         var newNameExample = _fixture.GetValidGenreName();
         var newIsActive = !exampleGenre.IsActive;
-
         genreRepositoryMock.Setup(x => x.Get(
             It.Is<Guid>(x => x == exampleGenre.Id),
             It.IsAny<CancellationToken>()
-            )).ReturnsAsync(exampleGenre);
+        )).ReturnsAsync(exampleGenre);
         categoryRepositoryMock.Setup(x => x.GetIdsListByIds(
             It.IsAny<List<Guid>>(),
             It.IsAny<CancellationToken>()
         )).ReturnsAsync(listReturnedByCategoryRepository);
-
         var useCase = new UseCase.UpdateGenre(
             genreRepositoryMock.Object,
             unitOfWorkMock.Object,
             categoryRepositoryMock.Object
         );
-
-        var input = new UpdateGenreInput(
+        var input = new UseCase.UpdateGenreInput(
             exampleGenre.Id,
             newNameExample,
             newIsActive,
@@ -324,9 +319,14 @@ public class UpdateGenreTest
         var action = async ()
             => await useCase.Handle(input, CancellationToken.None);
 
-        var notFoundIdsAsString = String.Join(", ", idsNotReturnedByCategoryRepository);
+        var notFoundIdsAsString = String.Join(
+            ", ",
+            IdsNotReturnedByCategoryRepository
+        );
         await action.Should().ThrowAsync<RelatedAggregateException>()
-            .WithMessage($"Related category id (or ids) not found: {notFoundIdsAsString}");
+            .WithMessage(
+            $"Related category id (or ids) not found: {notFoundIdsAsString}"
+        );
     }
 
     [Fact(DisplayName = nameof(Update_Genre_Without_Categories_Ids))]
@@ -336,7 +336,7 @@ public class UpdateGenreTest
         var genreRepositoryMock = _fixture.GetGenreRepositoryMock();
         var categoryRepositoryMock = _fixture.GetCategoryRepositoryMock();
         var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
-        var exampleCategoriesIdsList = _fixture.GetRanbomIdsList();
+        var exampleCategoriesIdsList = _fixture.GetRandomIdsList();
         var exampleGenre = _fixture.GetExampleGenre(
             categoriesIds: exampleCategoriesIdsList
         );
@@ -384,7 +384,7 @@ public class UpdateGenreTest
         var genreRepositoryMock = _fixture.GetGenreRepositoryMock();
         var categoryRepositoryMock = _fixture.GetCategoryRepositoryMock();
         var unitOfWorkMock = _fixture.GetUnitOfWorkMock();
-        var exampleCategoriesIdsList = _fixture.GetRanbomIdsList();
+        var exampleCategoriesIdsList = _fixture.GetRandomIdsList();
         var exampleGenre = _fixture.GetExampleGenre(
             categoriesIds: exampleCategoriesIdsList
         );

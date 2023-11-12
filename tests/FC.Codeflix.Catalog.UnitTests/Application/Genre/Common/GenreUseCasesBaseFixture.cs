@@ -20,7 +20,7 @@ public class GenreUseCasesBaseFixture : BaseFixture
         return genre;
     }
 
-    public List<Guid> GetRanbomIdsList(int? count = null)
+    public List<Guid> GetRandomIdsList(int? count = null)
         => Enumerable
             .Range(1, count ?? (new Random()).Next(1, 10))
             .Select(x => Guid.NewGuid())
