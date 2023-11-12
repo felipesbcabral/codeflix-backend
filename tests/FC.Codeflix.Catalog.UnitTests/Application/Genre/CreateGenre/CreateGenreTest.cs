@@ -94,9 +94,9 @@ public class CreateGenreTest
         output.CreatedAt.Should().NotBeSameDateAs(default);
     }
 
-    [Fact(DisplayName = nameof(Create_Throw_When_Category_Not_Found))]
+    [Fact(DisplayName = nameof(Create_Throw_When_Related_Category_Not_Found))]
     [Trait("Application", "CreateGenre - Use Cases")]
-    public async Task Create_Throw_When_Category_Not_Found()
+    public async Task Create_Throw_When_Related_Category_Not_Found()
     {
         var input = _fixture.GetExampleInputWithCategories();
         var exampleGuid = input.CategoriesIds![^1];
