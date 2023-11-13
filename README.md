@@ -27,7 +27,7 @@ https://github.com/felipesbcabral/codeflix-backend.git
 - Visual Studio 2022
 - SDK do .NET 6 instalado
 - Docker Desktop (para integração do Docker com o Visual Studio)
-
+ 
 <br /><br />
 ---
 
