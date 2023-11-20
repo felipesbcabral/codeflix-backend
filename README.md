@@ -10,7 +10,7 @@
 </center>
 <br />
  
-## Como executar?
+## Como executar? 
 
 1. Clone o repositório:
    ```sh
