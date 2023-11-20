@@ -20,6 +20,18 @@ public class GenreUseCasesBaseFixture : BaseFixture
         return genre;
     }
 
+    public List<DomainEntity.Genre> GetExampleGenresList(int count = 10)
+        => Enumerable.Range(1, count).Select(_ =>
+        {
+            var genre = new DomainEntity.Genre(
+            GetValidGenreName(),
+            GetRandomBoolean()
+        );
+            GetRandomIdsList()
+                .ForEach(genre.AddCategory);
+            return genre;
+        }).ToList();
+
     public List<Guid> GetRandomIdsList(int? count = null)
         => Enumerable
             .Range(1, count ?? (new Random()).Next(1, 10))
