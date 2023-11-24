@@ -14,7 +14,6 @@ public class Genre : AggregateRoot
         => _categories.AsReadOnly();
 
     private readonly List<Guid> _categories;
-    public bool IsDeleted;
 
     public Genre(string name, bool isActive = true)
     {
