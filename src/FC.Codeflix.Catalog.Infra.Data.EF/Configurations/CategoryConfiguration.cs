@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FC.Codeflix.Catalog.Infra.Data.EF.Configurations;
-internal class CategoryConfiguration : IEntityTypeConfiguration<Category>
+internal class GenresCategoriesConfigurations : IEntityTypeConfiguration<Category>
 {
     public void Configure(EntityTypeBuilder<Category> builder)
     {
