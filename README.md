@@ -14,7 +14,7 @@
    git clone https://github.com/felipesbcabral/codeflix-backend.git
 
 2. Abra o arquivo da solution com o Visual Studio 2022.
-3. Execute o projeto usando o Docker Desktop.
+3. Execute o projeto usando o Docker Desktop. 
 
 ## 🛠️ Ferramentas necessárias
 
