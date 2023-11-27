@@ -1,5 +1,6 @@
 ﻿using FC.Codeflix.Catalog.Application.UseCases.Category.GetCategory;
 using FluentAssertions;
+using FluentValidation;
 using Xunit;
 
 namespace FC.Codeflix.Catalog.UnitTests.Application.Category.GetCategory;
@@ -30,6 +31,7 @@ public class GetCategoryInputValidatorTest
     [Trait("Application", "GetCategoryInputValidation - Use Cases")]
     public void Invalid_When_Empty_Guid_Id()
     {
+        ValidatorOptions.Global.LanguageManager.Enabled = false;
         var invalidInput = new GetCategoryInput(Guid.Empty);
         var validator = new GetCategoryInputValidator();
 

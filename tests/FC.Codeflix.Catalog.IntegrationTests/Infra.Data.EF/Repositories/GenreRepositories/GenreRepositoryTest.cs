@@ -1,4 +1,5 @@
 ﻿using FC.Codeflix.Catalog.Application.Exceptions;
+using FC.Codeflix.Catalog.Domain.SeedWork.SearchableRepository;
 using FC.Codeflix.Catalog.Infra.Data.EF;
 using FC.Codeflix.Catalog.Infra.Data.EF.Models;
 using FluentAssertions;
@@ -332,5 +333,291 @@ public class GenreRepositoryTest
                 .FirstOrDefault(c => c.Id == genreCategory.CategoryId);
             category.Should().NotBeNull();
         });
+    }
+
+    [Fact(DisplayName = nameof(Search_Returns_Items_And_Total))]
+    [Trait("Integration/Infra.Data", "GenreRepository - Repositories")]
+    public async Task Search_Returns_Items_And_Total()
+    {
+        CodeflixCatalogDbContext dbContext = _fixture.CreateDbContext();
+        var exampleGenresList = _fixture.GetExampleListGenres(10);
+        await dbContext.Genres.AddRangeAsync(exampleGenresList);
+        await dbContext.SaveChangesAsync();
+        var actDbContext = _fixture.CreateDbContext(true);
+        var genreRepository = new Repository(
+            actDbContext
+        );
+
+        var searchInput = new SearchInput(1, 20, "", "", SearchOrder.Asc);
+
+        var searchResult = await genreRepository.Search(searchInput, CancellationToken.None);
+
+        searchResult.Should().NotBeNull();
+        searchResult.CurrentPage.Should().Be(searchInput.Page);
+        searchResult.PerPage.Should().Be(searchInput.PerPage);
+        searchResult.Total.Should().Be(exampleGenresList.Count);
+        searchResult.Items.Should().HaveCount(exampleGenresList.Count);
+        foreach (var resultItem in searchResult.Items)
+        {
+            var exampleGenre = exampleGenresList
+                .FirstOrDefault(g => g.Id == resultItem.Id);
+            exampleGenre.Should().NotBeNull();
+            resultItem.Name.Should().Be(exampleGenre!.Name);
+            resultItem.IsActive.Should().Be(exampleGenre.IsActive);
+            resultItem.CreatedAt.Should().Be(exampleGenre.CreatedAt);
+        }
+    }
+
+    [Fact(DisplayName = nameof(Search_Returns_Empty_When_Persistence_Is_Empty))]
+    [Trait("Integration/Infra.Data", "GenreRepository - Repositories")]
+    public async Task Search_Returns_Empty_When_Persistence_Is_Empty()
+    {
+        var actDbContext = _fixture.CreateDbContext();
+        var genreRepository = new Repository(
+            actDbContext
+        );
+
+        var searchInput = new SearchInput(1, 20, "", "", SearchOrder.Asc);
+
+        var searchResult = await genreRepository.Search(
+            searchInput,
+            CancellationToken.None
+        );
+
+        searchResult.Should().NotBeNull();
+        searchResult.CurrentPage.Should().Be(searchInput.Page);
+        searchResult.PerPage.Should().Be(searchInput.PerPage);
+        searchResult.Total.Should().Be(0);
+        searchResult.Items.Should().HaveCount(0);
+    }
+
+    [Fact(DisplayName = nameof(Search_Returns_Relations))]
+    [Trait("Integration/Infra.Data", "GenreRepository - Repositories")]
+    public async Task Search_Returns_Relations()
+    {
+        CodeflixCatalogDbContext dbContext = _fixture.CreateDbContext();
+        var exampleGenresList = _fixture.GetExampleListGenres(10);
+        await dbContext.Genres.AddRangeAsync(exampleGenresList);
+        var random = new Random();
+        exampleGenresList.ForEach(async genre =>
+        {
+            var categoriesListExample = _fixture.GetExampleCategoriesList(random.Next(0, 4));
+            categoriesListExample.ForEach(
+                               category => genre.AddCategory(category.Id));
+            await dbContext.Categories.AddRangeAsync(categoriesListExample);
+            foreach (var categoryId in genre.Categories)
+            {
+                var relation = new GenresCategories(categoryId, genre.Id);
+                await dbContext.GenresCategories.AddAsync(relation);
+            }
+        });
+        await dbContext.SaveChangesAsync();
+        var actDbContext = _fixture.CreateDbContext(true);
+        var genreRepository = new Repository(
+            actDbContext
+        );
+
+        var searchInput = new SearchInput(1, 20, "", "", SearchOrder.Asc);
+
+        var searchResult = await genreRepository.Search(searchInput, CancellationToken.None);
+
+        searchResult.Should().NotBeNull();
+        searchResult.CurrentPage.Should().Be(searchInput.Page);
+        searchResult.PerPage.Should().Be(searchInput.PerPage);
+        searchResult.Total.Should().Be(exampleGenresList.Count);
+        searchResult.Items.Should().HaveCount(exampleGenresList.Count);
+        foreach (var resultItem in searchResult.Items)
+        {
+            var exampleGenre = exampleGenresList
+                .FirstOrDefault(g => g.Id == resultItem.Id);
+            exampleGenre.Should().NotBeNull();
+            resultItem.Name.Should().Be(exampleGenre!.Name);
+            resultItem.IsActive.Should().Be(exampleGenre.IsActive);
+            resultItem.CreatedAt.Should().Be(exampleGenre.CreatedAt);
+            resultItem.Categories.Should().HaveCount(exampleGenre.Categories.Count);
+            resultItem.Categories.Should().BeEquivalentTo(exampleGenre.Categories);
+        }
+    }
+
+    [Theory(DisplayName = nameof(Search_Returns_Paginated))]
+    [Trait("Integration/Infra.Data", "GenreRepository - Repositories")]
+    [InlineData(10, 1, 5, 5)]
+    [InlineData(10, 2, 5, 5)]
+    [InlineData(7, 2, 5, 2)]
+    [InlineData(7, 3, 5, 0)]
+    public async Task Search_Returns_Paginated(
+        int quantityToGenerate,
+        int page,
+        int perPage,
+        int expectedQuantityItems
+        )
+    {
+        CodeflixCatalogDbContext dbContext = _fixture.CreateDbContext();
+        var exampleGenresList = _fixture.GetExampleListGenres(quantityToGenerate);
+        await dbContext.Genres.AddRangeAsync(exampleGenresList);
+        var random = new Random();
+        exampleGenresList.ForEach(async genre =>
+        {
+            var categoriesListExample = _fixture.GetExampleCategoriesList(random.Next(0, 4));
+            categoriesListExample.ForEach(
+                               category => genre.AddCategory(category.Id));
+            await dbContext.Categories.AddRangeAsync(categoriesListExample);
+            foreach (var categoryId in genre.Categories)
+            {
+                var relation = new GenresCategories(categoryId, genre.Id);
+                await dbContext.GenresCategories.AddAsync(relation);
+            }
+        });
+        await dbContext.SaveChangesAsync();
+        var actDbContext = _fixture.CreateDbContext(true);
+        var genreRepository = new Repository(
+            actDbContext
+        );
+
+        var searchInput = new SearchInput(page, perPage, "", "", SearchOrder.Asc);
+
+        var searchResult = await genreRepository.Search(searchInput, CancellationToken.None);
+
+        searchResult.Should().NotBeNull();
+        searchResult.CurrentPage.Should().Be(searchInput.Page);
+        searchResult.PerPage.Should().Be(searchInput.PerPage);
+        searchResult.Total.Should().Be(exampleGenresList.Count);
+        searchResult.Items.Should().HaveCount(expectedQuantityItems);
+        foreach (var resultItem in searchResult.Items)
+        {
+            var exampleGenre = exampleGenresList
+                .FirstOrDefault(g => g.Id == resultItem.Id);
+            exampleGenre.Should().NotBeNull();
+            resultItem.Name.Should().Be(exampleGenre!.Name);
+            resultItem.IsActive.Should().Be(exampleGenre.IsActive);
+            resultItem.CreatedAt.Should().Be(exampleGenre.CreatedAt);
+            resultItem.Categories.Should().HaveCount(exampleGenre.Categories.Count);
+            resultItem.Categories.Should().BeEquivalentTo(exampleGenre.Categories);
+        }
+    }
+
+    [Theory(DisplayName = nameof(Search_Returns_Paginated))]
+    [Trait("Integration/Infra.Data", "GenreRepository - Repositories")]
+    [InlineData("Action", 1, 5, 1, 1)]
+    [InlineData("Horror", 1, 5, 3, 3)]
+    [InlineData("Horror", 2, 5, 0, 3)]
+    [InlineData("Sci-fi", 1, 5, 4, 4)]
+    [InlineData("Sci-fi", 1, 2, 2, 4)]
+    [InlineData("Sci-fi", 2, 3, 1, 4)]
+    [InlineData("Sci-fi Other", 1, 3, 0, 0)]
+    [InlineData("Robots", 1, 5, 2, 2)]
+    public async Task Search_By_Text(
+        string search,
+        int page,
+        int perPage,
+        int expectedQuantityItemsReturned,
+        int expectedQuantityTotalItems
+        )
+    {
+        CodeflixCatalogDbContext dbContext = _fixture.CreateDbContext();
+        var exampleGenresList = _fixture.GetExampleListGenresByNames(
+            new List<string>() {
+                "Action",
+                "Horror",
+                "Horror - Robots",
+                "Horror - Based on Real Facts",
+                "Drama",
+                "Sci-fi IA",
+                "Sci-fi Space",
+                "Sci-fi Robots",
+                "Sci-fi Future",
+        }
+        );
+
+        await dbContext.Genres.AddRangeAsync(exampleGenresList);
+        var random = new Random();
+        exampleGenresList.ForEach(async genre =>
+        {
+            var categoriesListExample = _fixture.GetExampleCategoriesList(random.Next(0, 4));
+            categoriesListExample.ForEach(
+                               category => genre.AddCategory(category.Id));
+            await dbContext.Categories.AddRangeAsync(categoriesListExample);
+            foreach (var categoryId in genre.Categories)
+            {
+                var relation = new GenresCategories(categoryId, genre.Id);
+                await dbContext.GenresCategories.AddAsync(relation);
+            }
+        });
+        await dbContext.SaveChangesAsync();
+        var actDbContext = _fixture.CreateDbContext(true);
+        var genreRepository = new Repository(
+            actDbContext
+        );
+
+        var searchInput = new SearchInput(page, perPage, search, "", SearchOrder.Asc);
+
+        var searchResult = await genreRepository.Search(searchInput, CancellationToken.None);
+
+        searchResult.Should().NotBeNull();
+        searchResult.CurrentPage.Should().Be(searchInput.Page);
+        searchResult.PerPage.Should().Be(searchInput.PerPage);
+        searchResult.Total.Should().Be(expectedQuantityTotalItems);
+        searchResult.Items.Should().HaveCount(expectedQuantityItemsReturned);
+        foreach (var resultItem in searchResult.Items)
+        {
+            var exampleGenre = exampleGenresList
+                .FirstOrDefault(g => g.Id == resultItem.Id);
+            exampleGenre.Should().NotBeNull();
+            resultItem.Name.Should().Be(exampleGenre!.Name);
+            resultItem.IsActive.Should().Be(exampleGenre.IsActive);
+            resultItem.CreatedAt.Should().Be(exampleGenre.CreatedAt);
+            resultItem.Categories.Should().HaveCount(exampleGenre.Categories.Count);
+            resultItem.Categories.Should().BeEquivalentTo(exampleGenre.Categories);
+        }
+    }
+
+    [Theory(DisplayName = nameof(Search_Ordered))]
+    [Trait("Integration/Infra.Data", "GenreRepository - Repositories")]
+    [InlineData("name", "asc")]
+    [InlineData("name", "desc")]
+    [InlineData("id", "asc")]
+    [InlineData("id", "desc")]
+    [InlineData("createdAt", "asc")]
+    [InlineData("createdAt", "desc")]
+    [InlineData("", "asc")]
+    public async Task Search_Ordered(
+            string orderBy,
+            string order
+        )
+    {
+        CodeflixCatalogDbContext dbContext = _fixture.CreateDbContext();
+        var exampleGenresList = _fixture.GetExampleListGenres(10);
+        await dbContext.AddRangeAsync(exampleGenresList);
+        await dbContext.SaveChangesAsync(CancellationToken.None);
+        var repository = new Repository(dbContext);
+        var searchOrder = order.ToLower() == "asc" ? SearchOrder.Asc : SearchOrder.Desc;
+        var searchInput = new SearchInput(1, 20, "", orderBy, searchOrder);
+
+        var output = await repository.Search(searchInput, CancellationToken.None);
+
+        var expectedOrderedList = _fixture.CloneGenresListOrdered(
+            exampleGenresList,
+            orderBy,
+            searchOrder
+        );
+
+        output.Should().NotBeNull();
+        output.Items.Should().NotBeNull();
+        output.CurrentPage.Should().Be(searchInput.Page);
+        output.PerPage.Should().Be(searchInput.PerPage);
+        output.Total.Should().Be(exampleGenresList.Count);
+        output.Items.Should().HaveCount(exampleGenresList.Count);
+
+        for (int indice = 0; indice < expectedOrderedList.Count; indice++)
+        {
+            var expectedItem = expectedOrderedList[indice];
+            var outputItem = output.Items[indice];
+            expectedItem.Should().NotBeNull();
+            outputItem.Should().NotBeNull();
+            outputItem!.Name.Should().Be(expectedItem.Name);
+            outputItem!.Id.Should().Be(expectedItem!.Id);
+            outputItem.IsActive.Should().Be(expectedItem.IsActive);
+            outputItem.CreatedAt.Should().Be(expectedItem.CreatedAt);
+        }
     }
 }
