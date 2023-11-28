@@ -82,8 +82,9 @@ public class CategoryRepository : ICategoryRepository
         return orderedQuery;
     }
 
-    public Task<IReadOnlyList<Guid>> GetIdsListByIds(List<Guid> ids, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<IReadOnlyList<Guid>> GetIdsListByIds(List<Guid> ids, CancellationToken cancellationToken)
+        => await _categories.AsNoTracking()
+            .Where(x => ids.Contains(x.Id))
+            .Select(category => category.Id)
+            .ToListAsync(cancellationToken);
 }

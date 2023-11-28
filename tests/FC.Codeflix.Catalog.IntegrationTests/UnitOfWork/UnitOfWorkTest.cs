@@ -2,7 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using UnitOfWorkInfra = FC.Codeflix.Catalog.Infra.Data.EF;
-namespace FC.Codeflix.Catalog.IntegrationTests.UnitOfWork;
+
+namespace FC.Codeflix.Catalog.IntegrationTests.UnitOfWorkTests;
 
 [Collection(nameof(UnitOfWorkTestFixture))]
 public class UnitOfWorkTest
