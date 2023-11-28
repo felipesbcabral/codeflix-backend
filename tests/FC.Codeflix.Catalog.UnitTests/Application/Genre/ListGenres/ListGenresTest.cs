@@ -59,7 +59,7 @@ public class ListGenresTest
 
             foreach (var expectedId in repositoryGenre.Categories)
             {
-                outputItem.Categories.Should().Contain(expectedId);
+                outputItem.Categories.Should().Contain(relation => relation.Id == expectedId);
             }
         });
 

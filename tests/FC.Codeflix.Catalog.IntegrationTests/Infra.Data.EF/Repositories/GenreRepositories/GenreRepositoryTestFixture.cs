@@ -2,7 +2,7 @@
 using FC.Codeflix.Catalog.Domain.SeedWork.SearchableRepository;
 using FC.Codeflix.Catalog.IntegrationTests.Base;
 using Xunit;
-using DomainEntity = FC.Codeflix.Catalog.Domain.Entity;
+using Genre = FC.Codeflix.Catalog.Domain.Entity.Genre;
 
 namespace FC.Codeflix.Catalog.IntegrationTests.Infra.Data.EF.Repositories.GenreRepositories;
 
@@ -19,13 +19,13 @@ public class GenreRepositoryTestFixture : BaseFixture
     public static bool GetRandomBoolean()
     => new Random().NextDouble() < 0.5;
 
-    public DomainEntity.Genre GetExampleGenre(
+    public Genre GetExampleGenre(
         bool? isActive = null,
         List<Guid>? categoriesIds = null,
         string? name = null
     )
     {
-        var genre = new DomainEntity.Genre(
+        var genre = new Genre(
                 name ?? GetValidGenreName(),
                 isActive ?? GetRandomBoolean()
             );
@@ -33,13 +33,13 @@ public class GenreRepositoryTestFixture : BaseFixture
         return genre;
     }
 
-    public List<DomainEntity.Genre> GetExampleListGenres(int count = 10)
+    public List<Genre> GetExampleListGenres(int count = 10)
         => Enumerable
             .Range(1, count)
             .Select(_ => GetExampleGenre())
             .ToList();
 
-    public List<DomainEntity.Genre> GetExampleListGenresByNames(List<string> names)
+    public List<Genre> GetExampleListGenresByNames(List<string> names)
         => names
             .Select(name => GetExampleGenre(name: name))
             .ToList();
