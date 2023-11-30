@@ -1,10 +1,10 @@
 ﻿using FC.Codeflix.Catalog.Application.UseCases.Category.CreateCategory;
 using FC.Codeflix.Catalog.Domain.Exceptions;
+using FC.Codeflix.Catalog.Infra.Data.EF;
 using FC.Codeflix.Catalog.Infra.Data.EF.Repositories;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
-using UnitOfWorkInfra = FC.Codeflix.Catalog.Infra.Data.EF;
 using UseCase = FC.Codeflix.Catalog.Application.UseCases.Category.CreateCategory;
 
 namespace FC.Codeflix.Catalog.IntegrationTests.Application.UseCases.Category.CreateCategory;
@@ -25,7 +25,7 @@ public class CreateCategoryTest
     {
         var dbContext = _fixture.CreateDbContext();
         var repository = new CategoryRepository(dbContext);
-        var unitOfWork = new UnitOfWorkInfra.UnitOfWork(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
 
         var useCase = new UseCase.CreateCategory(
             repository,
@@ -58,7 +58,7 @@ public class CreateCategoryTest
     {
         var dbContext = _fixture.CreateDbContext();
         var repository = new CategoryRepository(dbContext);
-        var unitOfWork = new UnitOfWorkInfra.UnitOfWork(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
 
         var useCase = new UseCase.CreateCategory(
             repository,
@@ -91,7 +91,7 @@ public class CreateCategoryTest
     {
         var dbContext = _fixture.CreateDbContext();
         var repository = new CategoryRepository(dbContext);
-        var unitOfWork = new UnitOfWorkInfra.UnitOfWork(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
 
         var useCase = new UseCase.CreateCategory(
             repository,
@@ -133,7 +133,7 @@ public class CreateCategoryTest
     {
         var dbContext = _fixture.CreateDbContext();
         var repository = new CategoryRepository(dbContext);
-        var unitOfWork = new UnitOfWorkInfra.UnitOfWork(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
 
         var useCase = new UseCase.CreateCategory(
             repository,

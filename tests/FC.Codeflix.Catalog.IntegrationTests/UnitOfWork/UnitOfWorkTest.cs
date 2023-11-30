@@ -1,7 +1,7 @@
-﻿using FluentAssertions;
+﻿using FC.Codeflix.Catalog.Infra.Data.EF;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
-using UnitOfWorkInfra = FC.Codeflix.Catalog.Infra.Data.EF;
 
 namespace FC.Codeflix.Catalog.IntegrationTests.UnitOfWorkTests;
 
@@ -22,7 +22,7 @@ public class UnitOfWorkTest
         var dbContext = _fixture.CreateDbContext();
         var exampleCategoriesList = _fixture.GetExampleCategoriesList();
         await dbContext.AddRangeAsync(exampleCategoriesList);
-        var unitOfWork = new UnitOfWorkInfra.UnitOfWork(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
 
         await unitOfWork.Commit(CancellationToken.None);
 
@@ -39,7 +39,7 @@ public class UnitOfWorkTest
     public async Task Rollback()
     {
         var dbContext = _fixture.CreateDbContext();
-        var unitOfWork = new UnitOfWorkInfra.UnitOfWork(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
 
         var task = async () => await unitOfWork.Rollback(CancellationToken.None);
 
