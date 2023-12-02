@@ -526,7 +526,7 @@ public class GenreRepositoryTest
                 "Sci-fi Space",
                 "Sci-fi Robots",
                 "Sci-fi Future",
-        }
+            }
         );
 
         await dbContext.Genres.AddRangeAsync(exampleGenresList);
