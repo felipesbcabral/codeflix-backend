@@ -1,11 +1,11 @@
 ﻿using FC.Codeflix.Catalog.Application.Exceptions;
 using FC.Codeflix.Catalog.Application.UseCases.Category.DeleteCategory;
+using FC.Codeflix.Catalog.Infra.Data.EF;
 using FC.Codeflix.Catalog.Infra.Data.EF.Repositories;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using ApplicationUseCase = FC.Codeflix.Catalog.Application.UseCases.Category.DeleteCategory;
-using UnitOfWorkInfra = FC.Codeflix.Catalog.Infra.Data.EF;
 
 namespace FC.Codeflix.Catalog.IntegrationTests.Application.UseCases.Category.DeleteCategory;
 
@@ -32,7 +32,7 @@ public class DeleteCategoryTest
         await dbContext.SaveChangesAsync();
         tracking.State = EntityState.Detached;
         var repository = new CategoryRepository(dbContext);
-        var unitOfWork = new UnitOfWorkInfra.UnitOfWork(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
         var useCase = new ApplicationUseCase.DeleteCategory(repository, unitOfWork);
 
         var input = new DeleteCategoryInput(categoryExample.Id);
@@ -60,7 +60,7 @@ public class DeleteCategoryTest
         await dbContext.AddRangeAsync(exampleList);
         await dbContext.SaveChangesAsync();
         var repository = new CategoryRepository(dbContext);
-        var unitOfWork = new UnitOfWorkInfra.UnitOfWork(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
         var useCase = new ApplicationUseCase.DeleteCategory(repository, unitOfWork);
 
         var input = new DeleteCategoryInput(Guid.NewGuid());

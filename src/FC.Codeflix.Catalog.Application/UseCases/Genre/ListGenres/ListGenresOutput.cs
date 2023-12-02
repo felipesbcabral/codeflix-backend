@@ -22,4 +22,12 @@ public class ListGenresOutput : PaginatedListOutput<GenreModelOutput>
                 .Select(GenreModelOutput.FromGenre)
                 .ToList()
         );
+
+    public void FillWithCategoriesNames(IReadOnlyList<DomainEntity.Category> categories)
+    {
+        foreach (GenreModelOutput item in Items)
+            foreach (GenreModelOutputCategory categoryOutput in item.Categories)
+                categoryOutput.Name = categories?.FirstOrDefault(
+                    category => category.Id == categoryOutput.Id)?.Name;
+    }
 }

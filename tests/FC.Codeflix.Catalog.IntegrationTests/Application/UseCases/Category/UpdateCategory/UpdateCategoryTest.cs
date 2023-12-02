@@ -1,13 +1,13 @@
 ﻿using FC.Codeflix.Catalog.Application.Exceptions;
 using FC.Codeflix.Catalog.Application.UseCases.Category.UpdateCategory;
 using FC.Codeflix.Catalog.Domain.Exceptions;
+using FC.Codeflix.Catalog.Infra.Data.EF;
 using FC.Codeflix.Catalog.Infra.Data.EF.Repositories;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using ApplicationUseCase = FC.Codeflix.Catalog.Application.UseCases.Category.UpdateCategory;
 using DomainEntity = FC.Codeflix.Catalog.Domain.Entity;
-using UnitOfWorkInfra = FC.Codeflix.Catalog.Infra.Data.EF;
 namespace FC.Codeflix.Catalog.IntegrationTests.Application.UseCases.Category.UpdateCategory;
 
 [Collection(nameof(UpdateCategoryTestFixture))]
@@ -35,7 +35,7 @@ public class UpdateCategoryTest
         await dbContext.SaveChangesAsync();
         trackingInfo.State = EntityState.Detached;
         var repository = new CategoryRepository(dbContext);
-        var unitOfWork = new UnitOfWorkInfra.UnitOfWork(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
         var useCase = new ApplicationUseCase.UpdateCategory(repository, unitOfWork);
 
         var output = await useCase.Handle(input, CancellationToken.None);
@@ -78,7 +78,7 @@ public class UpdateCategoryTest
         await dbContext.SaveChangesAsync();
         trackingInfo.State = EntityState.Detached;
         var repository = new CategoryRepository(dbContext);
-        var unitOfWork = new UnitOfWorkInfra.UnitOfWork(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
         var useCase = new ApplicationUseCase.UpdateCategory(repository, unitOfWork);
 
         var output = await useCase.Handle(input, CancellationToken.None);
@@ -120,7 +120,7 @@ public class UpdateCategoryTest
         await dbContext.SaveChangesAsync();
         trackingInfo.State = EntityState.Detached;
         var repository = new CategoryRepository(dbContext);
-        var unitOfWork = new UnitOfWorkInfra.UnitOfWork(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
         var useCase = new ApplicationUseCase.UpdateCategory(repository, unitOfWork);
 
         var output = await useCase.Handle(input, CancellationToken.None);
@@ -149,7 +149,7 @@ public class UpdateCategoryTest
         await dbContext.AddRangeAsync(_fixture.GetExampleCategoriesList());
         await dbContext.SaveChangesAsync();
         var repository = new CategoryRepository(dbContext);
-        var unitOfWork = new UnitOfWorkInfra.UnitOfWork(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
         var useCase = new ApplicationUseCase.UpdateCategory(repository, unitOfWork);
 
         var task = async () => await useCase.Handle(input, CancellationToken.None);
@@ -175,7 +175,7 @@ public class UpdateCategoryTest
         await dbContext.AddRangeAsync(exampleCategories);
         await dbContext.SaveChangesAsync();
         var repository = new CategoryRepository(dbContext);
-        var unitOfWork = new UnitOfWorkInfra.UnitOfWork(dbContext);
+        var unitOfWork = new UnitOfWork(dbContext);
         var useCase = new ApplicationUseCase.UpdateCategory(repository, unitOfWork);
         input.Id = exampleCategories[0].Id;
         var task = async () => await useCase.Handle(input, CancellationToken.None);
