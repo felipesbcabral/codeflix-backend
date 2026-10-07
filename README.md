@@ -1,45 +1,50 @@
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/20674439/158480674-3b8895e7-420e-4025-bd78-8058ba255476.png"  width="150" alt="Logo do projeto" />
-</p>  
-<h1 align="center">🚀 Microsserviço Catálogo de Vídeos com .NET</h1>
-<p align="center">
-  Este é um microsserviço que implementa o backend da administração do catálogo de vídeos.<br />
-  Ele utiliza Clean Architecture, DDD, TDD e as principais boas práticas atuais de mercado. 
-</p>
+# Codeflix Backend
 
-## 🚀 Como executar? 
+API de administração de um catálogo de vídeos, desenvolvida como projeto de estudo em C# e .NET 6. O código explora Clean Architecture e DDD, com persistência em MySQL via Entity Framework Core.
 
-1. Clone o repositório: 
-   ```sh
-   git clone https://github.com/felipesbcabral/codeflix-backend.git
- 
-2. Abra o arquivo da solution com o Visual Studio 2022. 
-3. Execute o projeto usando o Docker Desktop.  
+## Arquitetura
 
-## 🛠️ Ferramentas necessárias
+| Diretório | Responsabilidade |
+|---|---|
+| `src/FC.Codeflix.Catalog.Domain` | Entidades e regras de domínio |
+| `src/FC.Codeflix.Catalog.Application` | Casos de uso e contratos |
+| `src/FC.Codeflix.Catalog.Infra.Data.EF` | Persistência com Entity Framework Core |
+| `src/FC.Codeflix.Catalog.Api` | Endpoints HTTP e configuração da aplicação |
+| `tests/` | Projetos de testes unitários, de integração e de ponta a ponta |
 
-- Visual Studio 2022
-- SDK do .NET 6 instalado
-- Docker Desktop (para integração do Docker com o Visual Studio)
+## Ambiente de desenvolvimento
 
-## 🙌 Contribuição
+Requisitos: SDK do .NET 6 e Docker com Compose para o banco de dados. O projeto mantém a versão de .NET usada no estudo.
 
-Contribuições são sempre bem-vindas! Para contribuir com o projeto, siga os seguintes passos:
+```sh
+git clone https://github.com/felipesbcabral/codeflix-backend.git
+cd codeflix-backend
+dotnet restore FC.Codeflix.Catalog.sln
+docker compose up -d
+```
 
-1. Faça um fork do projeto
-2. Crie uma branch para a sua feature (`git checkout -b feature/AmazingFeature`)
-3. Faça o commit das suas alterações (`git commit -m 'Add some AmazingFeature'`)
-4. Faça o push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um pull request
+O Compose da raiz inicia o MySQL. A API é executada separadamente. Para executá-la no host, altere apenas `Server=catalogdb` para `Server=localhost` em `ConnectionStrings:CatalogDb`, no arquivo `src/FC.Codeflix.Catalog.Api/appsettings.Development.json`. Preserve os demais parâmetros; o Compose publica a porta 3306. Confira também a configuração de migrations da camada de persistência antes de usar os endpoints.
 
-## 📞 Contato
+```sh
+dotnet run --project src/FC.Codeflix.Catalog.Api
+```
 
-Se você tiver alguma dúvida sobre o projeto, sinta-se à vontade para entrar em contato comigo pelo meu perfil do GitHub.
+O perfil de desenvolvimento define o Swagger em [https://localhost:7042/swagger](https://localhost:7042/swagger). Também é possível abrir `FC.Codeflix.Catalog.sln` no Visual Studio 2022.
 
-<p align="center">
-  <a href="https://github.com/felipesbcabral">
-    <img src="https://github.com/felipesbcabral.png" width="75px;" alt="Foto do autor" />
-    <br />
-    Autor Felipe Cabral
-  </a>
-</p>
+## Testes
+
+Para executar os testes unitários:
+
+```sh
+dotnet test tests/FC.Codeflix.Catalog.UnitTests
+```
+
+Há projetos separados de integração e de ponta a ponta. Eles dependem de banco e configuração de ambiente; consulte os arquivos em `tests/` antes de executá-los.
+
+## Tecnologias
+
+C#, .NET 6, Entity Framework Core, MySQL, MediatR e Docker.
+
+## Contato
+
+[Felipe Cabral](https://github.com/felipesbcabral) · [LinkedIn](https://www.linkedin.com/in/felipesbcabral/)
